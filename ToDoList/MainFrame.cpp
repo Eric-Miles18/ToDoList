@@ -7,6 +7,7 @@
 MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 {
 	CreatControls();
+	SetupSizers();
 	BindEventHandler();
 	AddSavedTasks();
 }
@@ -19,13 +20,37 @@ void MainFrame::CreatControls() //Will control all ui controlos from here
 	panel = new wxPanel(this);
 	panel->SetFont(mainFont);
 
-	headTitle = new wxStaticText(panel, wxID_ANY, "To-Do List", wxPoint(0, 22), wxSize(800, -1), wxALIGN_CENTER_HORIZONTAL);
+	headTitle = new wxStaticText(panel, wxID_ANY, "To-Do List");
 	headTitle->SetFont(headTitleFont);
 
-	inputTask = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(100, 80), wxSize(495, 35), wxTE_PROCESS_ENTER);
-	addButton = new wxButton(panel, wxID_ANY, "Add", wxPoint(600, 80), wxSize(100, 35));
-	checkListBox = new wxCheckListBox(panel, wxID_ANY, wxPoint(100, 120), wxSize(600, 400));
-	clearButton = new wxButton(panel, wxID_ANY, "Clear", wxPoint(100, 525), wxSize(100, 35));
+	inputTask = new wxTextCtrl(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+	addButton = new wxButton(panel, wxID_ANY, "Add");
+	checkListBox = new wxCheckListBox(panel, wxID_ANY);
+	clearButton = new wxButton(panel, wxID_ANY, "Clear");
+}
+
+void MainFrame::SetupSizers()
+{
+	wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+	mainSizer->Add(headTitle, wxSizerFlags().CenterHorizontal());
+	mainSizer->AddSpacer(25);
+
+	wxBoxSizer* inputSizer = new wxBoxSizer(wxHORIZONTAL);
+	inputSizer->Add(inputTask, wxSizerFlags().Proportion(1));
+	mainSizer->AddSpacer(5);
+	inputSizer->Add(addButton);
+
+	mainSizer->Add(inputSizer, wxSizerFlags().Expand());
+	mainSizer->AddSpacer(5);
+	mainSizer->Add(checkListBox, wxSizerFlags().Expand().Proportion(1));
+	mainSizer->AddSpacer(5);
+	mainSizer->Add(clearButton);
+
+	wxGridSizer* outerSizer = new wxGridSizer(1);
+	outerSizer->Add(mainSizer, wxSizerFlags().Border(wxALL, 25).Expand());
+
+	panel->SetSizer(outerSizer);
+	outerSizer->SetSizeHints(this);
 }
 
 void MainFrame::BindEventHandler()

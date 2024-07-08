@@ -8,6 +8,7 @@ public:
 private:
 	//main functions to control and handel evreything
 	void CreatControls();
+	void SetupSizers();
 	void BindEventHandler();
 	void AddSavedTasks();
 
